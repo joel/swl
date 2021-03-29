@@ -25,7 +25,7 @@ jobs:
             node-version: '15'
             experimental: true
 
-    name: Test against Ruby ${{ matrix.ruby-version }} / Rails ${{ matrix.rails-version }} / NodeJs ${{ matrix.node-version }}
+    name: Run Test Suite + System
     runs-on: ubuntu-latest
 
     continue-on-error: ${{ endsWith(matrix.ruby-version, 'head') || matrix.rails-version == 'main' }}
@@ -60,7 +60,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Ruby
+    - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ job.test.env.RUBY_VERSION }}
@@ -76,7 +76,7 @@ jobs:
     #     restore-keys: |
     #       ${{ runner.os }}-test-
 
-    - name: Install Ruby dependencies
+    - name: Install Ruby dependencies With Rails ${{ matrix.rails-version }}
       env:
         MATRIX_RAILS_VERSION: ${{ matrix.rails-version }}
       run: |
