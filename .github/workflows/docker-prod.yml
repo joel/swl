@@ -27,6 +27,7 @@ jobs:
         with:
           builder: ${{ steps.builder-prod.outputs.name }}
           context: .
+          file: Dockerfile.dev
           tags: joel/weblog:prod
           cache-from: type=local,src=/tmp/.buildx-cache-prod
           cache-to: type=local,dest=/tmp/.buildx-cache-prod-new
