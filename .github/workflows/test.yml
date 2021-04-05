@@ -68,24 +68,15 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-
-    #  https://github.community/t/is-hashfiles-of-actions-cache-can-be-dynamic/171342
-    - name: Cache gems
-      id: gem-cache
-      uses: actions/cache@v1
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-${{ matrix.ruby-version }}-${{ matrix.rails-version }}-test-${{ hashFiles(format('{0}/gemfiles/rails_{1}.gemfile', github.workspace, matrix.rails-version)) }}
+        bundler-cache: true
 
     - name: Install Last Version of Bundler
-      if: steps.gem-cache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get --assume-yes install libpq-dev
         gem install bundler:'>= 2.2.x'
         echo "BUNDLER VERSION: [$(bundler --version)]"
 
     - name: Install Ruby dependencies With Rails ${{ matrix.rails-version }}
-      if: steps.gem-cache.outputs.cache-hit != 'true'
       env:
         BUNDLE_WITHOUT: production
         BUNDLE_PATH: vendor/bundle
