@@ -14,7 +14,7 @@ then
     --env LOG_LEVEL=debug \
     --network weblog-bridge-docker-network \
     --publish 3010:3000 \
-    joel/weblog:prod bin/rails server -p 3000 --early-hints -b 0.0.0.0
+    shared/weblog:prod bin/rails server -p 3000 --early-hints -b 0.0.0.0
 
 else
 	echo "Start development server"
@@ -28,5 +28,5 @@ else
     --network weblog-bridge-docker-network \
     --publish 3005:3000 \
     --mount type=bind,source=$PWD,target=/work \
-    joel/weblog:dev bin/rails server -p 3000 --early-hints -b 0.0.0.0
+    shared/weblog:dev bin/rails server -p 3000 --early-hints -b 0.0.0.0
 fi

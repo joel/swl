@@ -15,7 +15,7 @@ then
     --env RAILS_LOG_TO_STDOUT=true \
     --env LOG_LEVEL=debug \
     --network weblog-bridge-docker-network \
-    -it joel/weblog:prod sh
+    -it shared/weblog:prod sh
 
 else
 	echo "Start development console"
@@ -28,5 +28,5 @@ else
     --env LOG_APPENDER=true \
     --network weblog-bridge-docker-network \
     --mount type=bind,source=$PWD,target=/work \
-    -it joel/weblog:dev sh
+    -it shared/weblog:dev sh
 fi

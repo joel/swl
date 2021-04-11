@@ -7,7 +7,7 @@ then
   echo '==============================================='
 
   docker build --squash \
-  --tag joel/weblog:prod \
+  --tag shared/weblog:prod \
   .
   # --secret id=master_key,src=config/master.key \
   # .
@@ -16,6 +16,6 @@ else
 	echo "Build development image"
 
   docker build --squash \
-  --tag joel/weblog:dev \
+  --tag shared/weblog:dev \
   . -f Dockerfile.dev
 fi
