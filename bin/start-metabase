@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# --env MB_JETTY_PORT=3333 \
+
+docker run --rm \
+  --name weblog-metabase \
+  --env MB_DB_TYPE=postgres \
+  --env MB_DB_DBNAME=metabase \
+  --env MB_DB_PORT=5432 \
+  --env MB_DB_USER=postgres \
+  --env MB_DB_PASS=postgres \
+  --env MB_DB_HOST=weblog-db \
+  --network weblog-bridge-docker-network \
+  --platform=linux/amd64 \
+  --publish 4005:3000 \
+  metabase/metabase
