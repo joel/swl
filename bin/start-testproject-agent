@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# docker-compose -f testproject-agent.yaml up -d
+# docker compose -f testproject-agent.yaml up
+
+# docker logs --follow weblog_firefox_1
+# docker logs --follow weblog_chrome_1
+
+# docker logs --follow testproject-chrome
+
+# docker-compose -f testproject-agent-3.yaml stop
+# docker-compose -f testproject-agent-3.yaml rm -f
+
+
+# docker volume create testproject-data
+# docker volume create testproject-shm-chrome
+# docker volume create testproject-shm-firefox
+
+docker run --rm --detach \
+  --name testproject-chrome \
+  --mount source=testproject-shm-chrome,target=/dev/shm \
+  --platform=linux/amd64 \
+  --network weblog-bridge-docker-network \
+  --publish 6666:4444 \
+selenium/standalone-chrome
+
+docker run --name testproject-agent \
+  --env TP_API_KEY="rKI3HXj9l1rs5TW3XoaeQxrITtKRoh51hrfDRPQAD9E1" \
+  --env TP_AGENT_ALIAS="My First Agent" \
+  --env TP_SDK_PORT="8686" \
+  --env CHROME="localhost:6666" \
+  --env CHROME_EXT="testproject-chrome:6666" \
+  --mount source=testproject-data,target=/var/testproject/agent \
+  --platform=linux/amd64 \
+  --publish 8585:8585 \
+  --publish 8686:8686 \
+  --network weblog-bridge-docker-network \
+  testproject/agent:latest

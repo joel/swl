@@ -10,4 +10,5 @@ docker run --rm --detach \
   --env POSTGRES_USER=postgres \
   --network weblog-bridge-docker-network \
   --mount source=weblog-db-data,target=/var/lib/postgresql/data \
+  --publish 5555:5432 \
   postgres:13.2-alpine

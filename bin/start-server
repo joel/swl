@@ -16,10 +16,11 @@ then
     --publish 3010:3000 \
     shared/weblog:prod bin/rails server -p 3000 --early-hints -b 0.0.0.0
 
+    echo "Server started port 3010"
 else
-	echo "Start development server"
+	echo "Starting development server port 3005"
 
-  docker run --rm --detach \
+  docker run --rm \
     --name weblog-dev-app \
     --env DB_HOST=weblog-db \
     --env RAILS_LOG_TO_STDOUT=true \
@@ -28,5 +29,6 @@ else
     --network weblog-bridge-docker-network \
     --publish 3005:3000 \
     --mount type=bind,source=$PWD,target=/work \
-    shared/weblog:dev sh -c 'rm -f tmp/pids/server.pid && bin/rails server -p 3000 --early-hints -b 0.0.0.0'
+    shared/weblog:dev sh -c 'rm -f tmp/pids/server.pid && bin/rails server -p 3000 --early-hints -b 0.0.0.0' && \
+    docker logs --follow weblog-dev-app
 fi

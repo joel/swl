@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker container stop testproject-agent & \
+  docker container rm testproject-agent & \
+  docker container stop testproject-chrome & \
+  docker container rm testproject-chrome

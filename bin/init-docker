@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 NETWORK_NAME=weblog-bridge-docker-network
-DATABASE_NAME=weblog-db-data
-KEY_STORE_DB_NAME=weblog-redis-data
-BUNDLE_VOLUME=weblog-dev-bundle-volume
 
 docker network ls | grep $NETWORK_NAME
 if [[ $? = 1 ]]; then
@@ -13,18 +10,23 @@ else
   echo "Network Already Exists"
 fi
 
-docker volume ls | grep $DATABASE_NAME
-if [[ $? = 1 ]]; then
-  echo "Create Database Volume"
-  docker volume create $DATABASE_NAME
-else
-  echo "Database Volume Already Exists"
-fi
+volumes=(
+  weblog-db-data
+  weblog-redis-data
+  weblog-dev-bundle-volume
+  testproject-data
+  testproject-shm-chrome
+  testproject-shm-firefox
+)
 
-docker volume ls | grep $KEY_STORE_DB_NAME
-if [[ $? = 1 ]]; then
-  echo "Create Key Store DB Volume"
-  docker volume create $KEY_STORE_DB_NAME
-else
-  echo "Key Store DB Volume Already Exists"
-fi
+for volume in "${volumes[@]}"
+do
+  docker volume ls | grep $volume
+
+  if [[ $? = 1 ]]; then
+    echo "Create [$volume] volume!"
+    docker volume create $volume
+  else
+    echo "[$volume] already exists..."
+  fi
+done
