@@ -71,7 +71,7 @@ jobs:
 
       -
         name: Run Test From Docker Image
-        run: docker run -it --rm \
+        run: docker run --rm \
           --name myimage \
           --env DB_HOST=localhost \
           --env DB_PORT=5432 \
