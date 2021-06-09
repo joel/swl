@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SERVICE_NAME=foo
+
 if [[ -n $1 && $1 == 'production' ]]
 then
   echo '==============================================='
@@ -7,7 +9,7 @@ then
   echo '==============================================='
 
   docker build --squash \
-  --tag shared/weblog:prod \
+  --tag shared/${SERVICE_NAME}:prod \
   .
   # --secret id=master_key,src=config/master.key \
   # .
@@ -16,6 +18,6 @@ else
 	echo "Build development image"
 
   docker build --squash \
-  --tag shared/weblog:dev \
+  --tag shared/${SERVICE_NAME}:dev \
   . -f Dockerfile.dev
 fi

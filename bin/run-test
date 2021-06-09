@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+SERVICE_NAME=foo
+
+docker network ls | grep ${SERVICE_NAME}-bridge-docker-network
+if [[ $? = 1 ]]; then
+  echo "Create Network"
+  docker network create ${SERVICE_NAME}-bridge-docker-network
+else
+  echo "Network Already Exists"
+fi
+
+volumes=(
+  db-data
+  redis-data
+)
+
+for volume in "${volumes[@]}"
+do
+  docker volume ls | grep "${SERVICE_NAME}-${volume}"
+
+  if [[ $? = 1 ]]; then
+    echo "Create [${SERVICE_NAME}-${volume}] volume!"
+    docker volume create "${SERVICE_NAME}-${volume}"
+  else
+    echo "[${SERVICE_NAME}-${volume}] already exists..."
+  fi
+done
+
+docker container ls | grep ${SERVICE_NAME}-db 1> /dev/null
+if [[ $? = 1 ]]; then
+  echo "Starting DB... "
+  docker run --rm --detach \
+  --name ${SERVICE_NAME}-db \
+  --env POSTGRES_PASSWORD=postgres \
+  --env POSTGRES_USER=postgres \
+  --network ${SERVICE_NAME}-bridge-docker-network \
+  --mount source=${SERVICE_NAME}-db-data,target=/var/lib/postgresql/data \
+  postgres:13.2-alpine
+else
+  echo "DB Started!"
+fi
+
+docker container ls | grep ${SERVICE_NAME}-redis 1> /dev/null
+if [[ $? = 1 ]]; then
+  echo "Starting Redis... "
+  docker run --rm --detach \
+  --name ${SERVICE_NAME}-redis \
+  --network ${SERVICE_NAME}-bridge-docker-network \
+  --mount source=${SERVICE_NAME}-redis-data,target=/var/lib/redis/data \
+  redis:6.2.1-alpine3.13
+else
+  echo "Redis Started!"
+fi
+
+docker run -it --rm \
+  --name ${SERVICE_NAME}-dev-app \
+  --env DB_HOST=${SERVICE_NAME}-db \
+  --env DB_PORT=5432 \
+  --env REDIS_URL=redis://${SERVICE_NAME}-redis:6379/1 \
+  --env RAILS_LOG_TO_STDOUT=true \
+  --env LOG_LEVEL=debug \
+  --env LOG_APPENDER=true \
+  --network ${SERVICE_NAME}-bridge-docker-network \
+  --mount type=bind,source=$PWD,target=/work \
+  shared/${SERVICE_NAME}:dev sh -c "bundle exec rails db:create db:migrate && bundle exec rails test"
