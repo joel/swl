@@ -33,6 +33,24 @@ jobs:
   use:
     runs-on: ubuntu-latest
     needs: build
+
+    services:
+      db:
+        image: postgres:13.2-alpine
+        env:
+          POSTGRES_PASSWORD: pg_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:6.2.1-alpine3.13
+        ports:
+          - 6379:6379
+
     steps:
       -
         name: Set up Docker Buildx
@@ -48,3 +66,17 @@ jobs:
         run: |
           docker load --input /tmp/myimage.tar
           docker image ls -a
+          docker network ls
+          docker volume ls
+
+      -
+        name: Run Test From Docker Image
+        run: docker run -it --rm \
+          --name myimage \
+          --env DB_HOST=localhost \
+          --env DB_PORT=5432 \
+          --env REDIS_URL=redis://localhost:6379/1 \
+          --env RAILS_LOG_TO_STDOUT=true \
+          --env LOG_LEVEL=debug \
+          --env LOG_APPENDER=true \
+          myimage:latest sh -c "bundle exec rails db:create db:migrate && bundle exec rails test"
