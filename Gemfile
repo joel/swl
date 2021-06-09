@@ -34,6 +34,8 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "amazing_print"
 gem "rails_semantic_logger"
 
+gem "rails_performance"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "pry-byebug", platforms: [:mri, :mingw, :x64_mingw]

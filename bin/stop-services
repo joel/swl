@@ -1,3 +1,30 @@
 #!/usr/bin/env bash
 
+DB_NAME=${SERVICE_NAME}-db
+REDIS_NAME=${SERVICE_NAME}-redis
+SERVER_NAME=${SERVICE_NAME}-server
+
+docker container ls | grep $REDIS_NAME 1> /dev/null
+if [[ $? = 1 ]]; then
+  echo "Starting Redis..."
+  ./bin/start-redis
+else
+  echo "Redis Started!"
+fi
+
+docker container ls | grep $DB_NAME 1> /dev/null
+if [[ $? = 1 ]]; then
+  echo "Starting DB..."
+  ./bin/start-db
+else
+  echo "DB Started!"
+fi
+
+ps -ef | grep puma | grep 3005 1> /dev/null
+if [[ $? = 1 ]]; then
+  echo "Starting server..."
+  ./bin/start-server
+else
+  echo "Server Started!"
+fi
 docker container stop weblog-db weblog-redis
