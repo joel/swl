@@ -68,6 +68,8 @@ jobs:
           docker image ls -a
           docker network ls
           docker volume ls
+          pwd
+          ls -ltr
 
       -
         name: Run Test From Docker Image
@@ -75,8 +77,9 @@ jobs:
           --name myimage \
           --env DB_HOST=localhost \
           --env DB_PORT=5432 \
-          --env REDIS_URL=redis://localhost:6379/1 \
+          --env REDIS_URL='redis://localhost:6379/1' \
           --env RAILS_LOG_TO_STDOUT=true \
           --env LOG_LEVEL=debug \
           --env LOG_APPENDER=true \
+          --mount type=bind,source=${PWD},target=/work \
           myimage:latest sh -c "bundle exec rails db:create db:migrate && bundle exec rails test"
