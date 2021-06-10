@@ -70,6 +70,8 @@ jobs:
           docker volume ls
           pwd
           ls -ltr /home/runner/work
+          ls -ltr /home/runner/work/_temp
+          ls -ltr /home/runner/work/_actions
           ls -ltr /home/runner/work/swl
           ls -ltr /home/runner/work/swl/swl
 
@@ -77,5 +79,7 @@ jobs:
         name: Run Test From Docker Image
         run: |
           docker load --input /tmp/myimage.tar
-          docker image ls -a
-          docker run --rm myimage:latest sh -c "bundle exec rails db:create db:migrate && bundle exec rails test"
+          docker run --rm \
+            --env DB_HOST=localhost \
+            --env DB_PORT=5432 \
+            myimage:latest sh -c "bin/rails db:create db:migrate && bin/rails test"
