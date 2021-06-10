@@ -1,34 +1,34 @@
 name: Docker Cached Image Test CI
 
 cache: &cache
-  -
-    name: Check out code
-    id: checkout
-    uses: actions/checkout@v2
+-
+  name: Check out code
+  id: checkout
+  uses: actions/checkout@v2
 
-  -
-    name: Cache docker image
-    id: cache-docker-image
-    uses: actions/cache@v1
-    with:
-      path: ${{ env.IMAGE_CACHE_DIR }}
-      key: ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Dockerfile') }}
-      restore-keys: |
-        ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-
+-
+  name: Cache docker image
+  id: cache-docker-image
+  uses: actions/cache@v1
+  with:
+    path: ${{ env.IMAGE_CACHE_DIR }}
+    key: ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Dockerfile') }}
+    restore-keys: |
+      ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-
 
-  -
-    name: Docker load
-    id: docker-load
-    if: steps.cache-docker-image.outputs.cache-hit == 'true'
-    run: docker image load -i ${IMAGE_CACHE_DIR}/image.tar
+-
+  name: Docker load
+  id: docker-load
+  if: steps.cache-docker-image.outputs.cache-hit == 'true'
+  run: docker image load -i ${IMAGE_CACHE_DIR}/image.tar
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '**/*.md'
-      - 'LICENSE'
+push:
+  branches:
+    - main
+  paths-ignore:
+    - '**/*.md'
+    - 'LICENSE'
 
 env:
   DOCKER_BUILDKIT: 1
