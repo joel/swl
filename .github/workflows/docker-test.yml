@@ -52,6 +52,15 @@ jobs:
           - 6379:6379
 
     steps:
+
+      -
+        name: Verify PG connection from host
+        run: |
+          echo "DATABASE_PORT: [${{ job.services.db.ports[5432] }}]"
+          sudo apt install postgresql postgresql-contrib
+          psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres -c 'CREATE DATABASE pam_test;'
+          psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres pam_test -c <<< echo '\dt+'
+
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -65,6 +74,7 @@ jobs:
         name: Load image
         run: |
           docker load --input /tmp/myimage.tar
+          docker container ls -a
           docker image ls -a
           docker network ls
           docker volume ls
