@@ -36,9 +36,6 @@ RUN apk add --no-cache --update \
     libnotify-dev && \
     rm -rf /var/cache/apk/*
 
-ARG ARG_TZ Europe/London
-RUN cp /usr/share/zoneinfo/${ARG_TZ} /etc/localtime
-
 ARG ARG_GEM_HOME /bundle
 ENV GEM_HOME ${ARG_GEM_HOME}
 
