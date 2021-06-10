@@ -79,6 +79,25 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
+      -
+        name: Start PG
+        run: |
+          docker run --rm --detach \
+            --name pg-db-service \
+            --env POSTGRES_PASSWORD=postgres \
+            --env POSTGRES_USER=postgres \
+            --network host \
+            postgres:13.2-alpine
+
+      -
+        name: Start Redis
+        run: |
+          docker run --rm --detach \
+            --name redis-service \
+            --network host \
+            redis:6.2.1-alpine3.13
+
       -
         name: Download artifact
         uses: actions/download-artifact@v2
@@ -106,11 +125,8 @@ jobs:
           docker load --input /tmp/myimage.tar
           docker run --rm \
             --name myimage-app \
-            --env DB_HOST=db \
+            --env DB_HOST=pg-db-service \
             --env DB_PORT=5432 \
-            --env REDIS_URL=redis://redis:6379/1 \
-            --env RAILS_LOG_TO_STDOUT=true \
-            --env LOG_LEVEL=debug \
-            --env LOG_APPENDER=true \
+            --env REDIS_URL=redis://redis-service:6379/1 \
             --network host \
             myimage:latest sh -c "bin/rails db:prepare && bin/rails test"
