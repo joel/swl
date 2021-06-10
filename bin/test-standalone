@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+HOST=127.0.0.1
+DB_HOST=${HOST} DB_PORT=5555 REDIS_URL=redis://${HOST}:6333/1 bin/rails test

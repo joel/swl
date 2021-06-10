@@ -83,3 +83,5 @@ COPY Gemfile.lock $APP_PATH
 COPY . .
 
 RUN bundle install
+
+RUN RAILS_ENV=test bin/rake assets:precompile
