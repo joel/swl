@@ -54,8 +54,7 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 ARG ARG_BUNDLER_VERSION 2.2.16
-RUN gem update --system && \
-    gem install bundler:${ARG_BUNDLER_VERSION}
+RUN gem install bundler:${ARG_BUNDLER_VERSION}
 
 ENV APP_ROOT /app
 RUN mkdir ${APP_ROOT}
