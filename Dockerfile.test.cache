@@ -1,4 +1,6 @@
-FROM ruby:3.0.0-alpine3.13
+ARG ARG_RUBY_VERSION
+
+FROM ruby:${ARG_RUBY_VERSION}-alpine3.13
 
 RUN apk add --no-cache --update \
     # Nokogori compilation
@@ -31,19 +33,38 @@ RUN apk add --no-cache --update \
     git vim \
     #
     # Fixes watch file issues with things like HMR
-    libnotify-dev
+    libnotify-dev && \
+    rm -rf /var/cache/apk/*
 
-ENV BUNDLER_VERSION 2.2.16
-ENV BUNDLE_JOBS 20
-ENV BUNDLE_RETRY 5
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG ARG_TZ=Europe/London
+RUN cp /usr/share/zoneinfo/${ARG_TZ} /etc/localtime
+
+ARG ARG_GEM_HOME=/bundle
+ENV GEM_HOME=${ARG_GEM_HOME}
+
+ENV BUNDLE_JOBS 4
+ENV BUNDLE_RETRY 3
+ENV BUNDLE_PATH ${GEM_HOME}
+ENV BUNDLE_BIN ${GEM_HOME}/bin
+ENV BUNDLE_APP_CONFIG ${GEM_HOME}
 ENV BUNDLE_WITHOUT production
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ARG ARG_BUNDLER_VERSION 2.2.16
+RUN gem update --system && \
+    gem install bundler:${ARG_BUNDLER_VERSION}
+
+ENV APP_ROOT /app
+RUN mkdir ${APP_ROOT}
+ENV PATH ${APP_ROOT}/bin:${BUNDLE_BIN}:${GEM_HOME}/gems/bin:${PATH}
+WORKDIR ${APP_ROOT}
+
 ENV RAILS_ENV development
 ENV RACK_ENV development
-ENV APP_PATH /src
 
-WORKDIR $APP_PATH
-
-COPY Gemfile $APP_PATH
-COPY Gemfile.lock $APP_PATH
-
-RUN gem install bundler -v $BUNDLER_VERSION
+ARG ARG_COMPOSE_WAIT_VER 2.9.0
+RUN curl -SL https://github.com/ufoscout/docker-compose-wait/releases/download/${ARG_COMPOSE_WAIT_VER}/wait -o /wait
+RUN chmod +x /wait
