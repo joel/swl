@@ -47,3 +47,22 @@ then
   --tag shared/${SERVICE_NAME}:test \
   . -f Dockerfile.test
 fi
+
+if [[ -n $1 && $1 == 'cache' ]]
+then
+  echo '==============================================='
+  echo '========== BUILD TEST 2 IMAGE ============'
+  echo '==============================================='
+
+	echo "Build cache image"
+
+  docker build --squash \
+  --tag shared/${SERVICE_NAME}:cache \
+  --build-arg ARG_RUBY_VERSION=3.0.0 \
+  --build-arg ARG_BUNDLER_VERSION=2.2.16 \
+  --build-arg ARG_COMPOSE_WAIT_VER=2.9.0 \
+  --build-arg ARG_GEM_HOME=/bundle \
+  . -f Dockerfile.test.cache
+fi
+
+# --platform=linux/amd64 \
