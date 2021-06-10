@@ -30,7 +30,7 @@ services:
   wait-middleware: &wait-middleware
     <<: *base
     environment:
-      WAIT_HOSTS: db:5432 redis:6379
+      WAIT_HOSTS: db:5432, redis:6379
     depends_on:
       - db
     command: /wait
