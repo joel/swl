@@ -2,6 +2,13 @@
 
 SERVICE_NAME=foo
 
+if [ $# -eq 0 ]
+  then
+    echo "need to provide the target platform"
+    echo "e.g: test production development"
+    exit 1
+fi
+
 if [[ -n $1 && $1 == 'production' ]]
 then
   echo '==============================================='
@@ -13,11 +20,30 @@ then
   .
   # --secret id=master_key,src=config/master.key \
   # .
+fi
 
-else
+if [[ -n $1 && $1 == 'development' ]]
+then
+  echo '==============================================='
+  echo '========== BUILD DEVELOPMENT IMAGE ============'
+  echo '==============================================='
+
 	echo "Build development image"
 
   docker build --squash \
   --tag shared/${SERVICE_NAME}:dev \
   . -f Dockerfile.dev
+fi
+
+if [[ -n $1 && $1 == 'test' ]]
+then
+  echo '==============================================='
+  echo '========== BUILD TEST IMAGE ============'
+  echo '==============================================='
+
+	echo "Build test image"
+
+  docker build --squash \
+  --tag shared/${SERVICE_NAME}:test \
+  . -f Dockerfile.test
 fi

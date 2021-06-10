@@ -62,5 +62,4 @@ docker run -it --rm \
   --env LOG_LEVEL=debug \
   --env LOG_APPENDER=true \
   --network ${SERVICE_NAME}-bridge-docker-network \
-  --mount type=bind,source=$PWD,target=/work \
-  shared/${SERVICE_NAME}:dev sh -c "bundle exec rails db:create db:migrate && bundle exec rails test"
+  shared/${SERVICE_NAME}:test sh -c "bin/rails db:prepare && bin/rails test"
