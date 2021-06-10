@@ -30,7 +30,7 @@ services:
   wait-middleware: &wait-middleware
     <<: *base
     environment:
-      WAIT_HOSTS: db:5432, redis:6379
+      WAIT_HOSTS: db:5432
       WAIT_TIMEOUT: 90
       WAIT_HOST_CONNECT_TIMEOUT: 10
       WAIT_BEFORE: 5
