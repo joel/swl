@@ -54,6 +54,11 @@ jobs:
     steps:
 
       -
+        name: Update Container
+        run: |
+          sudo apt-get update
+
+      -
         name: Verify PG connection from host
         run: |
           echo "DATABASE PORT: [${{ job.services.db.ports[5432] }}]"
