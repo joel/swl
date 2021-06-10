@@ -37,7 +37,6 @@ jobs:
     services:
       db:
         image: postgres:13.2-alpine
-        name: postgres-service
         env:
           POSTGRES_PASSWORD: pg_password
         options: >-
@@ -49,7 +48,6 @@ jobs:
           - 5432:5432
       redis:
         image: redis:6.2.1-alpine3.13
-        name: redis-service
         ports:
           - 6379:6379
 
@@ -68,6 +66,8 @@ jobs:
           export PGPASSWORD=pg_password
           PGPASSWORD=pg_password psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres --no-password -c 'CREATE DATABASE pam_test;'
           PGPASSWORD=pg_password psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres --no-password pam_test -c <<< echo '\dt+'
+          POSTGRES_CONTAINER=$(docker container ls | grep postgres | awk '{print $1}')
+          echo "POSTGRES_CONTAINER: [${POSTGRES_CONTAINER}]"
 
       -
         name: Verify Redis connection from host
