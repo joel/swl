@@ -56,10 +56,18 @@ jobs:
       -
         name: Verify PG connection from host
         run: |
-          echo "DATABASE_PORT: [${{ job.services.db.ports[5432] }}]"
+          echo "DATABASE PORT: [${{ job.services.db.ports[5432] }}]"
           sudo apt install postgresql postgresql-contrib
-          psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres -c 'CREATE DATABASE pam_test;'
-          psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres pam_test -c <<< echo '\dt+'
+          export PGPASSWORD=pg_password
+          PGPASSWORD=pg_password psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres --no-password -c 'CREATE DATABASE pam_test;'
+          PGPASSWORD=pg_password psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres --no-password pam_test -c <<< echo '\dt+'
+
+      -
+        name: Verify Redis connection from host
+        run: |
+          echo "REDIS PORT: [${{ job.services.redis.ports[6379] }}]"
+          sudo apt install redis-server
+          redis-cli -h 127.0.0.1 -p ${{ job.services.redis.ports[6379] }}
 
       -
         name: Set up Docker Buildx
@@ -91,9 +99,9 @@ jobs:
           docker load --input /tmp/myimage.tar
           docker run --rm \
             --name myimage-app \
-            --env DB_HOST=localhost \
+            --env DB_HOST=127.0.0.1 \
             --env DB_PORT=5432 \
-            --env REDIS_URL=redis://localhost:6379/1 \
+            --env REDIS_URL=redis://127.0.0.1:6379/1 \
             --env RAILS_LOG_TO_STDOUT=true \
             --env LOG_LEVEL=debug \
             --env LOG_APPENDER=true \
