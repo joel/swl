@@ -31,12 +31,13 @@ RUN apk add --no-cache --update \
     #
     # Nice-to-haves
     git vim \
+    curl \
     #
     # Fixes watch file issues with things like HMR
     libnotify-dev && \
     rm -rf /var/cache/apk/*
 
-ARG ARG_GEM_HOME /bundle
+ARG ARG_GEM_HOME=/bundle
 ENV GEM_HOME ${ARG_GEM_HOME}
 
 ENV BUNDLE_JOBS 4
@@ -47,17 +48,19 @@ ENV BUNDLE_WITHOUT production
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-ARG ARG_BUNDLER_VERSION 2.2.16
-RUN gem install bundler:${ARG_BUNDLER_VERSION}
-
 ENV APP_ROOT /app
 RUN mkdir ${APP_ROOT}
-ENV PATH ${APP_ROOT}/bin:${BUNDLE_BIN}:${GEM_HOME}/gems/bin:${PATH}
+
+ARG ARG_BUNDLER_VERSION=2.2.16
+RUN gem install bundler:${ARG_BUNDLER_VERSION}
+
+ENV PATH ${APP_ROOT}/bin:${GEM_HOME}/gems/bin:${PATH}
+
 WORKDIR ${APP_ROOT}
 
 ENV RAILS_ENV development
 ENV RACK_ENV development
 
-ARG ARG_COMPOSE_WAIT_VER 2.9.0
+ARG ARG_COMPOSE_WAIT_VER=2.9.0
 RUN curl -SL https://github.com/ufoscout/docker-compose-wait/releases/download/${ARG_COMPOSE_WAIT_VER}/wait -o /wait
 RUN chmod +x /wait
