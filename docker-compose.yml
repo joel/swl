@@ -31,6 +31,11 @@ services:
     <<: *base
     environment:
       WAIT_HOSTS: db:5432, redis:6379
+      WAIT_TIMEOUT: 90
+      WAIT_HOST_CONNECT_TIMEOUT: 10
+      WAIT_BEFORE: 5
+      WAIT_AFTER: 5
+      WAIT_SLEEP_INTERVAL: 2
     depends_on:
       - db
     command: /wait
