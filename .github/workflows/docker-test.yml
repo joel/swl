@@ -37,6 +37,7 @@ jobs:
     services:
       db:
         image: postgres:13.2-alpine
+        name: postgres-service
         env:
           POSTGRES_PASSWORD: pg_password
         options: >-
@@ -48,6 +49,7 @@ jobs:
           - 5432:5432
       redis:
         image: redis:6.2.1-alpine3.13
+        name: redis-service
         ports:
           - 6379:6379
 
@@ -72,7 +74,7 @@ jobs:
         run: |
           echo "REDIS PORT: [${{ job.services.redis.ports[6379] }}]"
           sudo apt install redis-server
-          redis-cli -h 127.0.0.1 -p ${{ job.services.redis.ports[6379] }}
+          redis-cli -h 127.0.0.1 -p ${{ job.services.redis.ports[6379] }} <<< echo 'flushall'
 
       -
         name: Set up Docker Buildx
@@ -104,10 +106,11 @@ jobs:
           docker load --input /tmp/myimage.tar
           docker run --rm \
             --name myimage-app \
-            --env DB_HOST=127.0.0.1 \
+            --env DB_HOST=db \
             --env DB_PORT=5432 \
-            --env REDIS_URL=redis://127.0.0.1:6379/1 \
+            --env REDIS_URL=redis://redis:6379/1 \
             --env RAILS_LOG_TO_STDOUT=true \
             --env LOG_LEVEL=debug \
             --env LOG_APPENDER=true \
+            --network host \
             myimage:latest sh -c "bin/rails db:prepare && bin/rails test"
