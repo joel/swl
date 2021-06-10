@@ -68,6 +68,7 @@ jobs:
           PGPASSWORD=pg_password psql --host 127.0.0.1 --port ${{ job.services.db.ports[5432] }} -U postgres --no-password pam_test -c <<< echo '\dt+'
           POSTGRES_CONTAINER=$(docker container ls | grep postgres | awk '{print $1}')
           echo "POSTGRES_CONTAINER: [${POSTGRES_CONTAINER}]"
+          docker exec ${POSTGRES_CONTAINER} bash -c "psql -U postgres --no-password pam_test -c <<< echo '\l'"
 
       -
         name: Verify Redis connection from host
@@ -81,13 +82,17 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       -
+        name: Create Private Network
+        run: docker network create swl-bridge-docker-network
+
+      -
         name: Start PG
         run: |
           docker run --rm --detach \
             --name pg-db-service \
             --env POSTGRES_PASSWORD=postgres \
             --env POSTGRES_USER=postgres \
-            --network host \
+            --network swl-bridge-docker-network \
             postgres:13.2-alpine
 
       -
@@ -95,8 +100,12 @@ jobs:
         run: |
           docker run --rm --detach \
             --name redis-service \
-            --network host \
+            --network swl-bridge-docker-network \
             redis:6.2.1-alpine3.13
+
+      -
+        name: Check Containers on the Network
+        run: docker network inspect swl-bridge-docker-network
 
       -
         name: Download artifact
@@ -128,5 +137,5 @@ jobs:
             --env DB_HOST=pg-db-service \
             --env DB_PORT=5432 \
             --env REDIS_URL=redis://redis-service:6379/1 \
-            --network host \
+            --network swl-bridge-docker-network \
             myimage:latest sh -c "bin/rails db:prepare && bin/rails test"
