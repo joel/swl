@@ -33,7 +33,7 @@ RUN apk add --no-cache --update \
     # Fixes watch file issues with things like HMR
     libnotify-dev
 
-ENV BUNDLER_VERSION 2.2.14
+ENV BUNDLER_VERSION 2.2.16
 ENV BUNDLE_PATH /bundle
 ENV GEM_HOME /bundle
 ENV BUNDLE_JOBS 20
@@ -62,7 +62,7 @@ RUN apk add --no-cache --update \
     tzdata \
     postgresql=~13
 
-ENV BUNDLER_VERSION 2.2.14
+ENV BUNDLER_VERSION 2.2.16
 ENV BUNDLE_PATH /bundle
 ENV GEM_HOME /bundle
 ENV BUNDLE_JOBS 20
