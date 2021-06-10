@@ -97,7 +97,7 @@ jobs:
       GEMS_CACHE_KEY: cache-gems
 
     steps:
-      <<: *cache
+    <<: *cache
 
     - name: Docker compose build
       id: docker-build
@@ -143,7 +143,7 @@ jobs:
       TRIVY_CACHE_DIR: /tmp/cache/trivy
 
     steps:
-      <<: *cache
+    <<: *cache
 
     - name: Scan image
       id: scan-image
