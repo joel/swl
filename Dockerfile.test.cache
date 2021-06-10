@@ -38,23 +38,22 @@ RUN apk add --no-cache --update \
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-ARG ARG_TZ=Europe/London
+ARG ARG_TZ Europe/London
 RUN cp /usr/share/zoneinfo/${ARG_TZ} /etc/localtime
 
-ARG ARG_GEM_HOME=/bundle
-ENV GEM_HOME=${ARG_GEM_HOME}
+ARG ARG_GEM_HOME /bundle
+ENV GEM_HOME ${ARG_GEM_HOME}
 
 ENV BUNDLE_JOBS 4
 ENV BUNDLE_RETRY 3
 ENV BUNDLE_PATH ${GEM_HOME}
-ENV BUNDLE_BIN ${GEM_HOME}/bin
 ENV BUNDLE_WITHOUT production
+
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 ARG ARG_BUNDLER_VERSION 2.2.16
-RUN gem update --system && \
-    gem install bundler:${ARG_BUNDLER_VERSION}
+RUN gem install bundler:${ARG_BUNDLER_VERSION}
 
 ENV APP_ROOT /app
 RUN mkdir ${APP_ROOT}
