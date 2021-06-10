@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:13.2-alpine
     environment:
-      - POSTGRES_PASSWORD: pg_password
+      - POSTGRES_PASSWORD=pg_password
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
