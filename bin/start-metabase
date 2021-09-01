@@ -21,6 +21,9 @@
 # psql metabase
 # ALTER USER postgres CREATEDB;
 
+# --name weblog-metabase \
+# --env MB_DB_HOST=weblog-db \
+# --network weblog-bridge-docker-network \
 
 docker run --rm \
   --name metabase \
