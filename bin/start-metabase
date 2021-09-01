@@ -2,15 +2,34 @@
 
 # --env MB_JETTY_PORT=3333 \
 
+# docker run --rm metabase/metabase
+
+# createuser --username=postgres --role=postgres --createdb --login --createrole --superuser --host=127.0.0.1 --port=5432 --password
+
+# psql --port=5432 template1
+
+# # Add User
+# createuser -D -P postgres
+
+# psql template1
+# alter role postgres with superuser;
+
+# createdb -O postgres -E UTF8 metabase
+# # Verification
+# psql -U postgres -d metabase
+# Grant user, connect to PGSL with root or granted user
+# psql metabase
+# ALTER USER postgres CREATEDB;
+
+
 docker run --rm \
-  --name weblog-metabase \
+  --name metabase \
   --env MB_DB_TYPE=postgres \
   --env MB_DB_DBNAME=metabase \
   --env MB_DB_PORT=5432 \
   --env MB_DB_USER=postgres \
   --env MB_DB_PASS=postgres \
-  --env MB_DB_HOST=weblog-db \
-  --network weblog-bridge-docker-network \
+  --env MB_DB_HOST=127.0.0.1 \
   --platform=linux/amd64 \
-  --publish 4005:3000 \
+  --publish 4000:3000 \
   metabase/metabase
