@@ -38,7 +38,7 @@ jobs:
 
     - name: Cache docker image
       id: cache-docker-image
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ${{ env.IMAGE_CACHE_DIR }}
         key: ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Dockerfile') }}
@@ -81,7 +81,7 @@ jobs:
 
     - name: Cache docker image
       id: cache-docker-image
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ${{ env.IMAGE_CACHE_DIR }}
         key: ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Dockerfile') }}
@@ -107,7 +107,7 @@ jobs:
 
     - name: Cache bundle gems
       id: cache-bundle-gems
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ${{ env.GEMS_CACHE_DIR }}
         key: ${{ runner.os }}-${{ env.GEMS_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Gemfile.lock') }}
@@ -143,7 +143,7 @@ jobs:
 
     - name: Cache docker image
       id: cache-docker-image
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ${{ env.IMAGE_CACHE_DIR }}
         key: ${{ runner.os }}-${{ env.IMAGE_CACHE_KEY }}-${{ matrix.ruby }}-${{ hashFiles('Dockerfile') }}
